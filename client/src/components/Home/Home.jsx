@@ -1,6 +1,6 @@
 function Home() {
   return (
-    <div className="flex h-full w-full justify-center items-center">
+    <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">
       <div className="flex w-1/2 h-full items-center justify-center">
         <div className="w-3/4">
           <div className="flex justify-center">
@@ -30,7 +30,7 @@ function Home() {
           </div>
 
           <div className="flex justify-center mt-6">
-            <div className="text-gray-500 text-xl text hover:underline cursor-pointer">Logout</div>
+            <div className="text-white text-xl text hover:underline cursor-pointer">Logout</div>
           </div>
         </div>
       </div>
