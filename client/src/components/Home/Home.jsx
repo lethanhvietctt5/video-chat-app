@@ -1,4 +1,12 @@
+import { useContext, useEffect } from "react";
+import LoginContext from "../../context/login";
 function Home() {
+  const loginContext = useContext(LoginContext);
+
+  useEffect(() => {
+    if (!loginContext.userID) window.location = "/login";
+  });
+
   return (
     <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">
       <div className="flex w-1/2 h-full items-center justify-center">
@@ -30,7 +38,9 @@ function Home() {
           </div>
 
           <div className="flex justify-center mt-6">
-            <div className="text-white text-xl text hover:underline cursor-pointer">Logout</div>
+            <div className="text-white text-xl text hover:underline cursor-pointer">
+              Logout
+            </div>
           </div>
         </div>
       </div>
