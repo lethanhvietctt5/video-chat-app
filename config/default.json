@@ -1,0 +1,3 @@
+{
+  "mongoURL": "mongodb+srv://lethanhviet:22102000@video-chat-app.pfec9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+}
