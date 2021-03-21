@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Redirect } from "react-router";
+import { logout } from "../../actions/auth";
+function Home({logout, isAuthenticated }) {
+  function handleLogout() {
+    logout();
+  }
 
-function Home() {
   return (
     <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">
       <div className="flex w-1/2 h-full items-center justify-center">
@@ -33,7 +40,13 @@ function Home() {
 
           <div className="flex justify-center mt-6">
             <div className="text-white text-xl text hover:underline cursor-pointer">
-              <Link to="/login">Login</Link>
+              {isAuthenticated ? (
+                <Link to="/login" onClick={handleLogout}>
+                  Logout
+                </Link>
+              ) : (
+                <Link to="/login">Login</Link>
+              )}
             </div>
           </div>
         </div>
@@ -42,4 +55,12 @@ function Home() {
   );
 }
 
-export default Home;
+Home.propTypes = {
+  isAuthenticated: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { logout })(Home);

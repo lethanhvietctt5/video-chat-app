@@ -5,6 +5,7 @@ import {
   REGISTER_FAILED,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILED,
+  LOG_OUT,
 } from "../actions/types";
 import api from "../api/index";
 
@@ -26,3 +27,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch({ type: LOAD_USER_FAILED });
   }
 };
+
+export const logout = () => ({
+  type: LOG_OUT,
+});
