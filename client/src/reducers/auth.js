@@ -3,6 +3,8 @@ import {
   LOGIN_FAILED,
   REGISTER_SUCCESS,
   REGISTER_FAILED,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILED,
 } from "../actions/types";
 
 const initialState = {
@@ -28,6 +30,13 @@ function authReducer(state = initialState, action) {
         isAuthenticated: false,
         user: null,
       };
+    case LOAD_USER_SUCCESS:
+      return {
+        ...state,
+        ...payload,
+        isAuthenticated: true,
+      };
+    case LOAD_USER_FAILED:
     default:
       return state;
   }

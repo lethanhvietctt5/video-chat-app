@@ -3,12 +3,19 @@ import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Message from "./components/Message/Message";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Provider } from "react-redux";
 import store from "./store";
+import setToken from "./api/setToken";
+import { loadUser } from "./actions/auth";
 
 function App() {
-  const [userID, setUserID] = useState(null);
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
+    store.dispatch(loadUser());
+  }, []);
   return (
     <Provider store={store}>
       <div className="App h-full">

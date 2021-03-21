@@ -2,10 +2,11 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
+import { Redirect } from "react-router";
 
 function Login({ login, isAuthenticated }) {
-  let [email, setEmail] = useState(null);
-  let [password, setPassword] = useState(null);
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
 
   function handleOnChange(event) {
     if (event.target.id === "email") setEmail(event.target.value);
@@ -14,7 +15,11 @@ function Login({ login, isAuthenticated }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    login({ email, password });
+    login(email, password);
+  }
+
+  if (isAuthenticated) {
+    return <Redirect to="/" />;
   }
 
   return (
