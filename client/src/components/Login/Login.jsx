@@ -1,6 +1,9 @@
 import { useState } from "react";
-import axios from "axios";
-function Login() {
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { login } from "../../actions/auth";
+
+function Login({ login, isAuthenticated }) {
   let [email, setEmail] = useState(null);
   let [password, setPassword] = useState(null);
 
@@ -11,14 +14,7 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    axios({
-      method: "POST",
-      url: "http://localhost:5000/login",
-      data: { email, password },
-      headers: { "Content-Type": "application/json; charset=UTF-8" },
-    }).then(response => {
-      console.log(response);
-    })
+    login({ email, password });
   }
 
   return (
@@ -43,6 +39,7 @@ function Login() {
                 type="text"
                 placeholder="Email"
                 onChange={handleOnChange}
+                value={email}
               />
             </div>
             <div className="mb-6">
@@ -58,6 +55,7 @@ function Login() {
                 type="password"
                 placeholder="******************"
                 onChange={handleOnChange}
+                value={password}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -75,4 +73,13 @@ function Login() {
   );
 }
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { login })(Login);
