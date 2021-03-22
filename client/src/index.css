@@ -8,6 +8,14 @@
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.h-80p {
+  height: 90%;
+}
+
+.h-20p {
+  height: 10%;
 }

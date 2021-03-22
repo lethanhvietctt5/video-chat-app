@@ -6,6 +6,9 @@ module.exports = {
       backgroundImage: (theme) => ({
         "img-background": "url('./assets/images/background.png')",
       }),
+      fontSize: {
+        's': ".6rem",
+      },
     },
     minWidth: {
       0: "0",

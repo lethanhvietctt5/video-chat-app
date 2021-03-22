@@ -1,27 +1,105 @@
-function Message() {
-  return (
-    <div className="h-screen w-1/3 border-2 m-4 rounded-lg border-blue-600">
-      <div className="h-5/6">Message</div>
-      <div className="flex w-full h-1/6 items-center justify-center p-2">
-        <div className="w-5/6 h-full border-2 border-blue-400 rounded-xl">
-          <textarea className="h-full w-full p-2 no-scrollbar outline-none rounded-xl" type="text" />
+import { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import io from "socket.io-client";
+
+const END_POINT = "http://localhost:5000";
+let socket;
+
+function Message({ isAuthenticated, user, room }) {
+  let [messages, setMessages] = useState([]);
+  let [message, setMessage] = useState("");
+
+  useEffect(() => {
+    socket = io(END_POINT, {
+      transports: ["websocket", "polling", "flashsocket"],
+    });
+    if (user) {
+      socket.emit("joinRoom", { name: user.name, room });
+    }
+  }, [END_POINT, user]);
+
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages([...messages, message]);
+    });
+  });
+
+  function handleInput(e) {
+    e.preventDefault();
+    setMessage(e.target.value);
+  }
+
+  function handleSendMessage() {
+    if (message) {
+      socket.emit("sendMessage", { name: user.name, msg: message, room });
+      setMessage("");
+    }
+  }
+
+  function renderMessage(item, index) {
+    if (item.name !== "Admin")
+      return (
+        <div
+          className={
+            item.name === user.name ? "flex justify-end" : "flex justify-start"
+          }
+        >
+          <div
+            key={index}
+            className={
+              item.name === user.name
+                ? "w-auto max-w-full inline-block p-2 rounded-xl bg-blue-500 my-1 text-white"
+                : "w-auto max-w-full inline-block p-2 rounded-xl bg-gray-400 my-1"
+            }
+          >
+            <p className="text-s font-bold w-auto max-w-full">{item.name}</p>
+            <p className="w-auto max-w-full">{item.msg}</p>
+          </div>
         </div>
-        <div className="w-1/6 flex justify-center items-center bg-blue-400 text-white mx-2 p-2 rounded-2xl">
-          <div className="text-2xl">
-            <svg width="1em" height="1em" viewBox="0 0 32 32">
-              <path
-                d="M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l9.6 3.84l3.84 9.6a1 1 0 0 0 .9.63a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05zM19 24.2l-2.79-7L21 12.41L19.59 11l-4.83 4.83L7.8 13l17.53-6.33z"
-                fill="currentColor"
-              ></path>
+      );
+    return <div key={index}>{item.msg}</div>;
+  }
+
+  return (
+    <div className="h-full w-full">
+      <div className="h-80p mx-2">
+        <div className="text-2xl box-content">Message</div>
+        <div className="text-xs">
+          {messages?.map((item, index) => renderMessage(item, index))}
+        </div>
+      </div>
+
+      <div className="h-20p flex border-t p-2 items-center">
+        <div className="h-full w-11/12 p-1">
+          <input
+            type="text"
+            name="message"
+            placeholder="Ab"
+            value={message}
+            onChange={handleInput}
+            className="h-full w-full text-xs no-scrollbar resize-none outline-none border-gray-400 border rounded-full p-2"
+          />
+        </div>
+        <div className="h-full flex items-center w-1/12 text-xl">
+          <button onClick={handleSendMessage} className="focus:outline-none">
+            <svg width="1em" height="1em" viewBox="0 0 15 15">
+              <g fill="none">
+                <path
+                  d="M14.5.5l.46.197a.5.5 0 0 0-.657-.657L14.5.5zm-14 6l-.197-.46a.5.5 0 0 0-.06.889L.5 6.5zm8 8l-.429.257a.5.5 0 0 0 .889-.06L8.5 14.5zM14.303.04l-14 6l.394.92l14-6l-.394-.92zM.243 6.93l5 3l.514-.858l-5-3l-.514.858zM5.07 9.757l3 5l.858-.514l-3-5l-.858.514zm3.889 4.94l6-14l-.92-.394l-6 14l.92.394zM14.146.147l-9 9l.708.707l9-9l-.708-.708z"
+                  fill="currentColor"
+                ></path>
+              </g>
             </svg>
-          </div>
-          <div>
-            <button>Send</button>
-          </div>
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-export default Message;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(Message);

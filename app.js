@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("./models/user");
+const { userJoin, userLeave, getUser, users } = require("./utils/users");
 
 app.use(express.static("public"));
 app.use(express.json({ extended: false }));
@@ -27,7 +28,10 @@ app.get("/auth", function (req, res) {
   const token = req.headers["x-auth-token"];
   if (token) {
     const decoded = jwt.verify(token, "shhhhh");
-    return res.status(200).json({ user: decoded.email });
+
+    return res
+      .status(200)
+      .json({ user: { email: decoded.email, name: decoded.name } });
   }
 
   res.status(403).json({ message: "Failed Auth" });
@@ -39,8 +43,13 @@ app.post("/login", async function (req, res) {
   if (user) {
     const checkPassword = await bcrypt.compare(password, user.password);
     if (checkPassword) {
-      const token = jwt.sign({ email: email, password: password }, "shhhhh");
-      return res.status(200).json({ token, user: email });
+      const token = jwt.sign(
+        { email: email, password: password, name: user.name },
+        "shhhhh"
+      );
+      return res
+        .status(200)
+        .json({ token, user: { email: user.email, name: user.name } });
     }
     return res.status(403).json({ message: "Failed" });
   }
@@ -63,6 +72,27 @@ app.post("/register", async function (req, res) {
 });
 
 const port = process.env.PORT || 5000;
+
+io.on("connection", (socket) => {
+  socket.on("joinRoom", ({ name, room }) => {
+    const user = userJoin({ id: socket.id, name, room });
+    socket.join(user.room);
+
+    // Wellcome room
+    socket.emit("message", { name: "Admin", msg: "Wellcome to chat app" });
+    socket.broadcast.to(user.room).emit("message", {
+      name: "Admin",
+      msg: `${name} has joined to room`,
+    });
+  });
+
+  socket.on("sendMessage", ({ name, msg, room }) => {
+    io.to(room).emit("message", {
+      name,
+      msg,
+    });
+  });
+});
 
 server.listen(port, () => {
   console.log(`App is running on http://localhost:${port}`);
