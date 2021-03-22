@@ -5,6 +5,8 @@ const io = require("socket.io")(server);
 const cors = require("cors");
 const connectDB = require("./config/db");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const User = require("./models/user");
 
 app.use(express.static("public"));
 app.use(express.json({ extended: false }));
@@ -31,13 +33,33 @@ app.get("/auth", function (req, res) {
   res.status(403).json({ message: "Failed Auth" });
 });
 
-app.post("/login", function (req, res) {
+app.post("/login", async function (req, res) {
   const { email, password } = req.body;
+  const user = await User.findOne({ email: email });
+  if (user) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if (checkPassword) {
+      const token = jwt.sign({ email: email, password: password }, "shhhhh");
+      return res.status(200).json({ token, user: email });
+    }
+    return res.status(403).json({ message: "Failed" });
+  }
+  res.status(403).json({ message: "Failed" });
+});
 
-  if (email === "lethanhviet7c@gmail.com" && password === "22102000") {
-    const token = jwt.sign({ email: email, password: password }, "shhhhh");
-    res.status(200).json({ token, user: email });
-  } else res.status(403).json({ message: "Failed" });
+app.post("/register", async function (req, res) {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password)
+    return res.status(500).json({ msg: "Please fill all!" });
+  let user = await User.findOne({ email });
+  if (user) {
+    return res.status(500).json({ msg: "Account exists" });
+  }
+  const salt = await bcrypt.genSalt(10);
+  user = new User({ name, email, password });
+  user.password = await bcrypt.hash(password, salt);
+  await user.save();
+  res.status(200).json({ user: email });
 });
 
 const port = process.env.PORT || 5000;

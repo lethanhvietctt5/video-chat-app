@@ -3,9 +3,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router";
 import { logout } from "../../actions/auth";
-function Home({logout, isAuthenticated }) {
+function Home({ logout, isAuthenticated }) {
   function handleLogout() {
     logout();
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
   }
 
   return (
@@ -44,9 +48,7 @@ function Home({logout, isAuthenticated }) {
                 <Link to="/login" onClick={handleLogout}>
                   Logout
                 </Link>
-              ) : (
-                <Link to="/login">Login</Link>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

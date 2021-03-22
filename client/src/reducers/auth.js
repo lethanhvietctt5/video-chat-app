@@ -18,6 +18,10 @@ function authReducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    case REGISTER_SUCCESS:
+      return state;
+    case REGISTER_FAILED:
+      return state;
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -38,6 +42,7 @@ function authReducer(state = initialState, action) {
         isAuthenticated: true,
       };
     case LOAD_USER_FAILED:
+      return state;
     case LOG_OUT:
       return {
         ...state,
