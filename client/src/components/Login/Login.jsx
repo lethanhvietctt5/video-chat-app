@@ -2,14 +2,12 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
-import { Redirect, useHistory } from "react-router";
+import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 
 function Login({ login, isAuthenticated, alerts }) {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-
-  let history = useHistory();
 
   function handleOnChange(event) {
     if (event.target.id === "email") setEmail(event.target.value);

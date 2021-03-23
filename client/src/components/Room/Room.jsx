@@ -2,12 +2,10 @@ import { useParams } from "react-router";
 import Message from "../Message/Message";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { Redirect } from "react-router";
 import { loadUser } from "../../actions/auth";
-import store from "../../store";
 
 function Room({ isAuthenticated }) {
-  let [room, setRoom] = useState(useParams().id);
+  let [room] = useState(useParams().id);
 
   useEffect(() => {
     loadUser();

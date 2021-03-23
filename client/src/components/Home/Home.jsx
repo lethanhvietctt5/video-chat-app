@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Redirect } from "react-router";
 import { logout } from "../../actions/auth";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
@@ -14,6 +13,8 @@ function Home({ logout, isAuthenticated }) {
   function handleCreateRoom() {
     setId(uuidv4());
   }
+
+  if (!isAuthenticated) return <Redirect to="/login" />
 
   return (
     <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">

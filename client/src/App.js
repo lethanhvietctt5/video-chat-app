@@ -24,7 +24,7 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <PrivateRoute path="/rooms/:id" component={Room} />
-          <PrivateRoute path="/" exact component={Home} />
+          <Route path="/" exact component={Home} />
         </Switch>
       </div>
     </Provider>
