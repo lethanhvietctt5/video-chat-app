@@ -11,10 +11,6 @@ function Home({ logout, isAuthenticated }) {
     logout();
   }
 
-  if (!isAuthenticated) {
-    return <Redirect to="/login" />;
-  }
-
   function handleCreateRoom() {
     setId(uuidv4());
   }

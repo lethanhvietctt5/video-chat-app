@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import setToken from "./api/setToken";
 import { loadUser } from "./actions/auth";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   useEffect(() => {
@@ -22,8 +23,8 @@ function App() {
         <Switch>
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
-          <Route path="/rooms/:id" component={Room} />
-          <Route path="/" exact component={Home} />
+          <PrivateRoute path="/rooms/:id" component={Room} />
+          <PrivateRoute path="/" exact component={Home} />
         </Switch>
       </div>
     </Provider>

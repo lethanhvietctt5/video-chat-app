@@ -29,7 +29,8 @@ function Message({ isAuthenticated, user, room }) {
     setMessage(e.target.value);
   }
 
-  function handleSendMessage() {
+  function handleSendMessage(e) {
+    e.preventDefault();
     if (message) {
       socket.emit("sendMessage", { name: user.name, msg: message, room });
       setMessage("");
@@ -69,11 +70,15 @@ function Message({ isAuthenticated, user, room }) {
         </div>
       </div>
 
-      <div className="h-20p flex border-t p-2 items-center">
+      <form
+        className="h-20p flex border-t p-2 items-center"
+        onSubmit={handleSendMessage}
+      >
         <div className="h-full w-11/12 p-1">
           <input
             type="text"
             name="message"
+            autoComplete="off"
             placeholder="Ab"
             value={message}
             onChange={handleInput}
@@ -81,7 +86,7 @@ function Message({ isAuthenticated, user, room }) {
           />
         </div>
         <div className="h-full flex items-center w-1/12 text-xl">
-          <button onClick={handleSendMessage} className="focus:outline-none">
+          <button type="submit" className="focus:outline-none">
             <svg width="1em" height="1em" viewBox="0 0 15 15">
               <g fill="none">
                 <path
@@ -92,7 +97,7 @@ function Message({ isAuthenticated, user, room }) {
             </svg>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

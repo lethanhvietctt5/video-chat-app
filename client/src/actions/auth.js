@@ -14,6 +14,7 @@ export const login = (email, password) => async (dispatch) => {
   try {
     const res = await api.post("/login", body);
     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+    dispatch(loadUser());
     dispatch(addAlert("Login successful!"));
   } catch (err) {
     dispatch({ type: LOGIN_FAILED });
@@ -30,7 +31,7 @@ export const loadUser = () => async (dispatch) => {
   }
 };
 
-export const register = ({name, email, password}) => async (dispatch) => {
+export const register = ({ name, email, password }) => async (dispatch) => {
   try {
     const body = { name, email, password };
     const res = await api.post("/register", body);

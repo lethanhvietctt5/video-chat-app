@@ -2,11 +2,14 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import { Link } from "react-router-dom";
+
 function Login({ login, isAuthenticated, alerts }) {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+
+  let history = useHistory();
 
   function handleOnChange(event) {
     if (event.target.id === "email") setEmail(event.target.value);
@@ -108,7 +111,7 @@ function Login({ login, isAuthenticated, alerts }) {
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
-  alerts: PropTypes.array
+  alerts: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({

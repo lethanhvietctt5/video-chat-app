@@ -1,11 +1,17 @@
 import { useParams } from "react-router";
 import Message from "../Message/Message";
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Redirect } from "react-router";
+import { loadUser } from "../../actions/auth";
+import store from "../../store";
 
-function Room({ isAuthenticated}) {
+function Room({ isAuthenticated }) {
   let [room, setRoom] = useState(useParams().id);
+
+  useEffect(() => {
+    loadUser();
+  });
 
   return (
     <div className="w-full h-full flex">
@@ -21,4 +27,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps)(Room);
+export default connect(mapStateToProps, { loadUser })(Room);
