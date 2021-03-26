@@ -6,7 +6,7 @@ import { loadUser } from "../../actions/auth";
 import io from "socket.io-client";
 import Peer from "peerjs";
 
-const END_POINT = "https://room-video-chat-app.herokuapp.com/";
+const END_POINT = "https://room-call-chat-app.herokuapp.com/";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);

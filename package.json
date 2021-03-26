@@ -5,10 +5,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client-install": "npm install --prefix client",
+    "build": "cd client && npm run build",
+    "client-install": "cd client && npm install",
     "start": "node app.js",
-    "client": "npm start --prefix client",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "client": "cd client && npm start",
+    "heroku-postbuild": "npm run client-install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.5",
     "mongoose": "^5.12.1",
+    "path": "^0.12.7",
     "peer": "^0.6.1",
     "socket.io": "^4.0.0"
   },

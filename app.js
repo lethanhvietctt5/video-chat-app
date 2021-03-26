@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt");
 const User = require("./models/user");
 const { userJoin, userLeave, getUser, users } = require("./utils/users");
 const user = require("./models/user");
+const path = require("path");
 
 app.use(express.static("public"));
 app.use(express.json({ extended: false }));
@@ -73,6 +74,15 @@ app.post("/register", async function (req, res) {
   await user.save();
   res.status(200).json({ user: email });
 });
+
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const port = process.env.PORT || 5000;
 
