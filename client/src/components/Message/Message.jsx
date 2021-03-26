@@ -1,32 +1,21 @@
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import io from "socket.io-client";
 
-const END_POINT = "http://localhost:5000";
-let socket;
-
-function Message({ isAuthenticated, user, room }) {
+function Message({ isAuthenticated, room, user, socket }) {
   let [messages, setMessages] = useState([]);
   let [message, setMessage] = useState("");
 
   useEffect(() => {
-    socket = io(END_POINT, {
-      transports: ["websocket", "polling", "flashsocket"],
-    });
-    if (user) {
-      socket.emit("joinRoom", { name: user.name, room });
+    if (socket) {
+      socket.on("message", (message) => {
+        setMessages([...messages, message]);
+        let element = document.getElementById("messages");
+        element.scrollTop = element.scrollHeight;
+      });
     }
-  }, [room, user]);
-
-  useEffect(() => {
-    socket.on("message", (message) => {
-      setMessages([...messages, message]);
-      let element = document.getElementById("messages");
-      element.scrollTop = element.scrollHeight;
-    });
 
     return () => {
-      socket.off("message");
+      socket?.off("message");
     };
   });
 
@@ -37,7 +26,7 @@ function Message({ isAuthenticated, user, room }) {
 
   function handleSendMessage(e) {
     e.preventDefault();
-    if (message) {
+    if (message && socket) {
       socket.emit("sendMessage", { name: user.name, msg: message, room });
       setMessage("");
     }

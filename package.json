@@ -29,6 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.5",
     "mongoose": "^5.12.1",
+    "peer": "^0.6.1",
     "socket.io": "^4.0.0"
   },
   "devDependencies": {

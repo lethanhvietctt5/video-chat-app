@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("./models/user");
 const { userJoin, userLeave, getUser, users } = require("./utils/users");
+const user = require("./models/user");
 
 app.use(express.static("public"));
 app.use(express.json({ extended: false }));
@@ -23,6 +24,8 @@ app.use((req, res, next) => {
 });
 
 connectDB();
+
+let userPeers = [];
 
 app.get("/auth", function (req, res) {
   const token = req.headers["x-auth-token"];
@@ -74,12 +77,17 @@ app.post("/register", async function (req, res) {
 const port = process.env.PORT || 5000;
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ name, room }) => {
+  socket.on("joinRoom", ({ name, room, peerID }) => {
     const user = userJoin({ id: socket.id, name, room });
+    if (peerID) userPeers.push(peerID);
     socket.join(user.room);
+    socket.peerID = peerID;
 
     // Wellcome room
     socket.emit("message", { name: "Admin", msg: "Wellcome to chat app" });
+
+    io.to(room).emit("allMembers", userPeers);
+
     socket.broadcast.to(user.room).emit("message", {
       name: "Admin",
       msg: `${name} has joined to room`,
@@ -91,6 +99,22 @@ io.on("connection", (socket) => {
       name,
       msg,
     });
+  });
+
+  socket.on("disconnect", () => {
+    const user = userLeave(socket.id);
+    if (user) {
+      socket.broadcast.to(user.room).emit("message", {
+        name: "Admin",
+        msg: `${user.name} has left to room`,
+      });
+    }
+
+    userPeers = userPeers.filter((id) => id !== socket.peerID);
+
+    if (socket.client.conn.server.clientsCount == 0) {
+      userPeers = [];
+    }
   });
 });
 
