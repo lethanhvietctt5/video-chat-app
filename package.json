@@ -9,7 +9,8 @@
     "client-install": "cd client && npm install",
     "start": "node app.js",
     "client": "cd client && npm start",
-    "heroku-postbuild": "npm run client-install && npm run build"
+    "heroku-postbuild": "npm run client-install && npm run build",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",

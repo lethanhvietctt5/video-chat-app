@@ -118,9 +118,9 @@ io.on("connection", (socket) => {
         name: "Admin",
         msg: `${user.name} has left to room`,
       });
-    }
 
-    io.to(user.room).emit("allMembers", userPeers);
+      io.to(user.room).emit("allMembers", userPeers);
+    }
 
     userPeers = userPeers.filter((id) => id !== socket.peerID);
 

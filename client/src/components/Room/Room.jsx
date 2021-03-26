@@ -7,6 +7,7 @@ import io from "socket.io-client";
 import Peer from "peerjs";
 
 const END_POINT = "https://room-call-chat-app.herokuapp.com/";
+// const END_POINT = "http://localhost:5000";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);
@@ -73,12 +74,13 @@ function Room({ isAuthenticated, user }) {
   function playStream(id, stream) {
     if (!document.getElementById(id)) {
       let video = document.createElement("video");
+      let div = document.createElement("div");
       let videos = document.getElementById("videoContainer");
 
-      video.className = "w-1/2 h-1/2";
+      div.className = "max-w-full min-w-min flex justify-center items-center";
       video.srcObject = stream;
       video.muted = "muted";
-      video.id = id;
+      div.id = id;
       var playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise
@@ -87,14 +89,15 @@ function Room({ isAuthenticated, user }) {
             console.log(error);
           });
       }
-      videos.appendChild(video);
+      div.appendChild(video);
+      videos.appendChild(div);
     }
   }
 
   return (
     <div className="w-full h-full flex">
       <div
-        className="w-3/4 h-full flex overflow-y-scroll"
+        className="w-3/4 h-full grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2"
         id="videoContainer"
       ></div>
       <div className="w-1/4 h-full border-l border-gray-300">
