@@ -6,7 +6,7 @@ import { loadUser } from "../../actions/auth";
 import io from "socket.io-client";
 import Peer from "peerjs";
 
-const END_POINT = "http://localhost:5000";
+const END_POINT = "https://room-video-chat-app.herokuapp.com/";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);
@@ -22,7 +22,7 @@ function Room({ isAuthenticated, user }) {
       })
     );
 
-    setPeer(new Peer("", { host: "localhost", port: 9000, path: "/" }));
+    setPeer(new Peer());
   }, []);
 
   useEffect(() => {
@@ -30,6 +30,8 @@ function Room({ isAuthenticated, user }) {
       socket.emit("joinRoom", { name: user.name, room, peerID: id });
 
       socket.on("allMembers", (userPeers) => {
+        let videos = document.getElementById("videoContainer");
+        videos.innerHTML = "";
         setMembers(userPeers);
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
@@ -91,7 +93,10 @@ function Room({ isAuthenticated, user }) {
 
   return (
     <div className="w-full h-full flex">
-      <div className="w-3/4 h-full flex overflow-y-scroll" id="videoContainer"></div>
+      <div
+        className="w-3/4 h-full flex overflow-y-scroll"
+        id="videoContainer"
+      ></div>
       <div className="w-1/4 h-full border-l border-gray-300">
         <Message room={room} socket={socket} />
       </div>

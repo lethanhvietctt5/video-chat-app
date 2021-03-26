@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://room-video-chat-app.herokuapp.com/",
   headers: { "Content-Type": "application/json; charset=UTF-8" },
 });
 

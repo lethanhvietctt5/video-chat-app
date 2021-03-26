@@ -110,6 +110,8 @@ io.on("connection", (socket) => {
       });
     }
 
+    io.to(user.room).emit("allMembers", userPeers);
+
     userPeers = userPeers.filter((id) => id !== socket.peerID);
 
     if (socket.client.conn.server.clientsCount == 0) {
