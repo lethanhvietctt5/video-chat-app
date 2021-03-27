@@ -75,12 +75,12 @@ app.post("/register", async function (req, res) {
   res.status(200).json({ user: email });
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   // Set static folder
-  app.use(express.static('client/build'));
+  app.use(express.static("client/build"));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
 
@@ -88,7 +88,7 @@ const port = process.env.PORT || 5000;
 
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ name, room, peerID }) => {
-    const user = userJoin({ id: socket.id, name, room });
+    const user = userJoin({ id: socket.id, name, room, peerID });
     if (peerID) userPeers.push(peerID);
     socket.join(user.room);
     socket.peerID = peerID;
@@ -96,7 +96,11 @@ io.on("connection", (socket) => {
     // Wellcome room
     socket.emit("message", { name: "Admin", msg: "Wellcome to chat app" });
 
-    io.to(room).emit("allMembers", userPeers);
+    let allMembersInRoom = users
+      .filter((user) => user.room === room)
+      .map((user) => user.peerID);
+
+    io.to(room).emit("allMembers", allMembersInRoom);
 
     socket.broadcast.to(user.room).emit("message", {
       name: "Admin",
@@ -119,7 +123,10 @@ io.on("connection", (socket) => {
         msg: `${user.name} has left to room`,
       });
 
-      io.to(user.room).emit("allMembers", userPeers);
+      let allMembersInRoom = users
+        .filter((_user) => _user.room === user.room)
+        .map((user) => user.peerID);
+      io.to(user.room).emit("allMembers", allMembersInRoom);
     }
 
     userPeers = userPeers.filter((id) => id !== socket.peerID);
@@ -127,6 +134,35 @@ io.on("connection", (socket) => {
     if (socket.client.conn.server.clientsCount == 0) {
       userPeers = [];
     }
+  });
+
+  socket.on("peerClose", ({ peerId }) => {
+    if (peerId) {
+      userPeers = userPeers.filter((id) => id !== peerId);
+      socket.peerID = null;
+      let user = userLeave(socket.id);
+
+      if (user) {
+        socket.broadcast.to(user.room).emit("message", {
+          name: "Admin",
+          msg: `${user.name} has left to room`,
+        });
+
+        let allMembersInRoom = users
+          .filter((_user) => _user.room === user.room)
+          .map((user) => user.peerID);
+        io.to(user.room).emit("allMembers", allMembersInRoom);
+      }
+    }
+  });
+
+  socket.on("getPeers", ({ room }) => {
+    console.log(room);
+    let peers = users
+      .filter((user) => user.room === room)
+      .map((user) => user.peerId);
+
+    io.to(room).emit("sendPeers", peers);
   });
 });
 

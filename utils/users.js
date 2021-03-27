@@ -1,7 +1,7 @@
 let users = [];
 
-function userJoin({ id, name, room }) {
-  const user = { id, name, room };
+function userJoin({ id, name, room, peerID }) {
+  const user = { id, name, room, peerID };
   users.push(user);
   return user;
 }

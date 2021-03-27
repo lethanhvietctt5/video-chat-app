@@ -14,6 +14,8 @@ function Room({ isAuthenticated, user }) {
   let [socket, setSocket] = useState(null);
   let [members, setMembers] = useState([]);
   let [peer, setPeer] = useState(null);
+  let [peerId, setPeerId] = useState();
+  let [stream, setStream] = useState();
 
   useEffect(() => {
     loadUser();
@@ -28,25 +30,26 @@ function Room({ isAuthenticated, user }) {
 
   useEffect(() => {
     peer?.on("open", (id) => {
+      setPeerId(id);
       socket.emit("joinRoom", { name: user.name, room, peerID: id });
 
       socket.on("allMembers", (userPeers) => {
         let videos = document.getElementById("videoContainer");
-        videos.innerHTML = "";
+        if (videos) videos.innerHTML = "";
         setMembers(userPeers);
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
-            playStream(id, stream);
+            setStream(stream);
+            if (userPeers.includes(id)) playStream(id, stream);
             userPeers.forEach((member) => {
-              if (member !== peer.id) {
+              if (member !== id) {
                 let call = peer.call(member, stream);
                 call?.on("stream", (remoteStream) => {
                   playStream(member, remoteStream);
                 });
               }
             });
-            console.log(id, userPeers[1]);
           });
 
         // Answer
@@ -55,9 +58,9 @@ function Room({ isAuthenticated, user }) {
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
               call.answer(stream);
-              playStream(id, stream);
+              if (userPeers.includes(id)) playStream(id, stream);
               userPeers.forEach((member) => {
-                if (member !== peer.id) {
+                if (member !== id) {
                   call?.on("stream", (remoteStream) => {
                     playStream(member, remoteStream);
                   });
@@ -69,7 +72,19 @@ function Room({ isAuthenticated, user }) {
     });
   }, [socket, room, user, peer, members]);
 
-  // useEffect(() => () => socket?.close());
+  useEffect(() => {
+    return () => {
+      socket?.emit("peerClose", { peerId });
+    };
+  }, [socket, peerId]);
+
+  useEffect(() => {
+    return () => {
+      stream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+    };
+  }, [stream]);
 
   function playStream(id, stream) {
     if (!document.getElementById(id)) {
@@ -90,7 +105,7 @@ function Room({ isAuthenticated, user }) {
           });
       }
       div.appendChild(video);
-      videos.appendChild(div);
+      if (videos) videos.appendChild(div);
     }
   }
 
