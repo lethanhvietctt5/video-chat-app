@@ -1,7 +1,7 @@
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { logout } from "../../actions/auth";
+import { logout } from "../actions/auth";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 function Home({ logout, isAuthenticated }) {
@@ -14,14 +14,14 @@ function Home({ logout, isAuthenticated }) {
     setId(uuidv4());
   }
 
-  if (!isAuthenticated) return <Redirect to="/login" />
+  if (!isAuthenticated) return <Redirect to="/login" />;
 
   return (
     <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">
       <div className="flex w-1/2 h-full items-center justify-center">
         <div className="w-3/4">
           <div className="flex justify-center">
-            <div className="flex justify-end min-w-3/4 mr-6">
+            <Link to={`/join`} className="flex justify-end min-w-3/4 mr-6">
               <button className="justify-center flex min-w-1/2 items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none">
                 <svg width="2em" height="2em" viewBox="0 0 24 24">
                   <path
@@ -31,9 +31,12 @@ function Home({ logout, isAuthenticated }) {
                 </svg>
                 <div>Join meeting</div>
               </button>
-            </div>
+            </Link>
 
-            <div className="flex justify-start min-w-3/4 ml-6">
+            <Link
+              to={`/rooms/${id}`}
+              className="flex justify-start min-w-3/4 ml-6"
+            >
               <button
                 onClick={handleCreateRoom}
                 className="justify-center focus:outline-none min-w-1/2 flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
@@ -45,10 +48,10 @@ function Home({ logout, isAuthenticated }) {
                   ></path>
                 </svg>
                 <div>
-                  <Link to={`/rooms/${id}`}>Create a meeting</Link>
+                  <div>Create a meeting</div>
                 </div>
               </button>
-            </div>
+            </Link>
           </div>
 
           <div className="flex justify-center mt-6">

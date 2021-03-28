@@ -1,10 +1,11 @@
 import { useParams } from "react-router";
-import Message from "../Message/Message";
+import Message from "./Message";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { loadUser } from "../../actions/auth";
+import { loadUser } from "../actions/auth";
 import io from "socket.io-client";
 import Peer from "peerjs";
+import axios from "axios";
 
 const END_POINT = "https://room-call-chat-app.herokuapp.com/";
 // const END_POINT = "http://localhost:5000";
@@ -15,7 +16,6 @@ function Room({ isAuthenticated, user }) {
   let [members, setMembers] = useState([]);
   let [peer, setPeer] = useState(null);
   let [peerId, setPeerId] = useState();
-  let [stream, setStream] = useState();
 
   useEffect(() => {
     loadUser();
@@ -40,7 +40,6 @@ function Room({ isAuthenticated, user }) {
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
-            setStream(stream);
             playStream(id, stream);
             userPeers.forEach((member) => {
               if (member !== id) {
@@ -50,10 +49,12 @@ function Room({ isAuthenticated, user }) {
                 });
               }
             });
+            updateStream(userPeers);
           });
 
         // Answer
         peer.on("call", (call) => {
+          if (videos) videos.innerHTML = "";
           navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
@@ -83,11 +84,10 @@ function Room({ isAuthenticated, user }) {
 
   useEffect(() => {
     return () => {
-      stream?.getTracks().forEach((track) => {
-        track.stop();
-      });
+      socket?.close();
+      peer?.destroy();
     };
-  }, [stream]);
+  }, [peer]);
 
   function updateStream(userPeers) {
     let videos = document.getElementById("videoContainer");
