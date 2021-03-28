@@ -41,7 +41,7 @@ function Room({ isAuthenticated, user }) {
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
             setStream(stream);
-            if (userPeers.includes(id)) playStream(id, stream);
+            playStream(id, stream);
             userPeers.forEach((member) => {
               if (member !== id) {
                 let call = peer.call(member, stream);
@@ -58,7 +58,7 @@ function Room({ isAuthenticated, user }) {
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
               call.answer(stream);
-              if (userPeers.includes(id)) playStream(id, stream);
+              playStream(id, stream);
               userPeers.forEach((member) => {
                 if (member !== id) {
                   call?.on("stream", (remoteStream) => {
@@ -67,7 +67,10 @@ function Room({ isAuthenticated, user }) {
                 }
               });
             });
+          updateStream(userPeers);
         });
+
+        updateStream(userPeers);
       });
     });
   }, [socket, room, user, peer, members]);
@@ -85,6 +88,20 @@ function Room({ isAuthenticated, user }) {
       });
     };
   }, [stream]);
+
+  function updateStream(userPeers) {
+    let videos = document.getElementById("videoContainer");
+    let arr = [];
+    for (let i = 0; i < videos.childNodes.length; i++) {
+      if (!userPeers.includes(videos.childNodes[i].id)) {
+        arr.push(videos.childNodes[i]);
+      }
+    }
+
+    arr.forEach((video) => {
+      videos.removeChild(video);
+    });
+  }
 
   function playStream(id, stream) {
     if (!document.getElementById(id)) {
