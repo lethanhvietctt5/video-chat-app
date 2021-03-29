@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import Peer from "peerjs";
 
 const END_POINT = "https://room-call-chat-app.herokuapp.com/";
-// const END_POINT = "http://localhost:5000";
+//const END_POINT = "http://localhost:5000";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);
@@ -36,7 +36,7 @@ function Room({ isAuthenticated, user }) {
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
-            playStream(id, stream);
+            playStream(id, stream, true);
             userPeers.forEach((member) => {
               if (member !== id) {
                 let call = peer.call(member, stream);
@@ -55,7 +55,7 @@ function Room({ isAuthenticated, user }) {
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
               call.answer(stream);
-              playStream(id, stream);
+              playStream(id, stream, true);
               userPeers.forEach((member) => {
                 if (member !== id) {
                   call?.on("stream", (remoteStream) => {
@@ -99,7 +99,7 @@ function Room({ isAuthenticated, user }) {
     });
   }
 
-  function playStream(id, stream) {
+  function playStream(id, stream, isLocal = false) {
     if (!document.getElementById(id)) {
       let video = document.createElement("video");
       let div = document.createElement("div");
@@ -107,6 +107,9 @@ function Room({ isAuthenticated, user }) {
 
       div.className = "max-w-full min-w-min flex justify-center items-center";
       video.srcObject = stream;
+      if (isLocal) {
+        video.muted = "muted";
+      }
       div.id = id;
       var playPromise = video.play();
       if (playPromise !== undefined) {
