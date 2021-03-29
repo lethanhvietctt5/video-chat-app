@@ -89,7 +89,7 @@ function Message({ isAuthenticated, room, user, socket }) {
               className="h-full w-full text-xs no-scrollbar resize-none outline-none border-gray-400 border rounded-full p-2"
             />
           </div>
-          <div className="h-full flex items-center w-1/12 text-2xl">
+          <div className="h-full flex items-center w-1/12 text-2xl mr-2">
             <button type="submit" className="focus:outline-none">
               <svg width="1em" height="1em" viewBox="0 0 15 15">
                 <g fill="none">

@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import Peer from "peerjs";
 
 const END_POINT = "https://room-call-chat-app.herokuapp.com/";
-//const END_POINT = "http://localhost:5000";
+// const END_POINT = "http://localhost:5000";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);
@@ -127,10 +127,10 @@ function Room({ isAuthenticated, user }) {
   return (
     <div className="w-full h-full flex">
       <div
-        className="w-3/4 h-full grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2"
+        className="w-full sm:w-3/4 h-full no-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2"
         id="videoContainer"
       ></div>
-      <div className="w-1/4 h-full border-l border-gray-300">
+      <div className="w-1/4 hidden sm:block h-full border-l border-gray-300">
         <Message room={room} socket={socket} />
       </div>
     </div>
