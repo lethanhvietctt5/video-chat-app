@@ -5,27 +5,24 @@ import { useEffect, useState } from "react";
 import { loadUser } from "../actions/auth";
 import io from "socket.io-client";
 import Peer from "peerjs";
-import axios from "axios";
 
 const END_POINT = "https://room-call-chat-app.herokuapp.com/";
 // const END_POINT = "http://localhost:5000";
 
 function Room({ isAuthenticated, user }) {
   let [room] = useState(useParams().id);
-  let [socket, setSocket] = useState(null);
+  let [socket] = useState(() =>
+    io(END_POINT, {
+      transports: ["websocket"],
+      upgrade: false,
+    })
+  );
   let [members, setMembers] = useState([]);
-  let [peer, setPeer] = useState(null);
+  let [peer] = useState(() => new Peer());
   let [peerId, setPeerId] = useState();
 
   useEffect(() => {
     loadUser();
-    setSocket(
-      io(END_POINT, {
-        transports: ["websocket", "polling", "flashsocket"],
-      })
-    );
-
-    setPeer(new Peer());
   }, []);
 
   useEffect(() => {
@@ -36,7 +33,6 @@ function Room({ isAuthenticated, user }) {
       socket.on("allMembers", (userPeers) => {
         let videos = document.getElementById("videoContainer");
         if (videos) videos.innerHTML = "";
-        setMembers(userPeers);
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
@@ -67,11 +63,11 @@ function Room({ isAuthenticated, user }) {
                   });
                 }
               });
+              updateStream(userPeers);
             });
-          updateStream(userPeers);
         });
 
-        updateStream(userPeers);
+        setMembers(userPeers);
       });
     });
   }, [socket, room, user, peer, members]);
@@ -83,19 +79,19 @@ function Room({ isAuthenticated, user }) {
   }, [socket, peerId]);
 
   useEffect(() => {
-    return () => {
-      socket?.close();
-      peer?.destroy();
-    };
-  }, [peer]);
+    updateStream(members);
+  }, [members]);
 
   function updateStream(userPeers) {
     let videos = document.getElementById("videoContainer");
+    let arrVideos = document.querySelectorAll("#videoContainer > *");
     let arr = [];
+    console.log(userPeers, arrVideos.length, videos.childNodes.length);
     for (let i = 0; i < videos.childNodes.length; i++) {
       if (!userPeers.includes(videos.childNodes[i].id)) {
         arr.push(videos.childNodes[i]);
       }
+      console.log(arr);
     }
 
     arr.forEach((video) => {
@@ -111,7 +107,6 @@ function Room({ isAuthenticated, user }) {
 
       div.className = "max-w-full min-w-min flex justify-center items-center";
       video.srcObject = stream;
-      video.muted = "muted";
       div.id = id;
       var playPromise = video.play();
       if (playPromise !== undefined) {
