@@ -1,5 +1,6 @@
 # video-chat-app
-This is an app that allows creating room communication. You can create a room with a unique ID and invite your friends to join the room, you also can join an available room with a specific ID. People in the same room can chat in realtime together and see each other via stream.
+This is an app that allows creating room communication. You can create a room with a unique ID and invite your friends to join the room, you also can join an available room with a specific ID. People in the same room can chat in realtime together and see each other via stream. <br />
+Link deployed app:  https://room-call-chat-app.herokuapp.com/
 
 ## Features
 * Sign in, Sign up
