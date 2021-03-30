@@ -18,7 +18,29 @@ function Room({ isAuthenticated, user }) {
     })
   );
   let [members, setMembers] = useState([]);
-  let [peer] = useState(() => new Peer());
+  let [peer] = useState(
+    () =>
+      new Peer({
+        config: {
+          iceServers: [
+            { urls: ["stun:ss-turn1.xirsys.com"] },
+            {
+              username:
+                "Dc7ggNOIfRrrSBHsJ4QRfdtGsk0KSdvQR4vDjpRw800C9zQUuqOajzBquMCZp2lHAAAAAGBismBsZXRoYW5odmlldA==",
+              credential: "02cacc36-9116-11eb-a0d5-0242ac140004",
+              urls: [
+                "turn:ss-turn1.xirsys.com:80?transport=udp",
+                "turn:ss-turn1.xirsys.com:3478?transport=udp",
+                "turn:ss-turn1.xirsys.com:80?transport=tcp",
+                "turn:ss-turn1.xirsys.com:3478?transport=tcp",
+                "turns:ss-turn1.xirsys.com:443?transport=tcp",
+                "turns:ss-turn1.xirsys.com:5349?transport=tcp",
+              ],
+            },
+          ],
+        },
+      })
+  );
   let [peerId, setPeerId] = useState();
 
   useEffect(() => {
