@@ -10,4 +10,8 @@ const setToken = (token) => {
   }
 };
 
-export default setToken;
+const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+export { setToken, getToken };

@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { login } from "../actions/auth";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
+import { userLogin } from "redux/slices/auth";
 
-function Login({ login, isAuthenticated, alerts }) {
+function Login() {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+
+  const authStatus = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
   function handleOnChange(event) {
     if (event.target.id === "email") setEmail(event.target.value);
@@ -16,10 +18,10 @@ function Login({ login, isAuthenticated, alerts }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    login(email, password);
+    dispatch(userLogin({ email, password }));
   }
 
-  if (isAuthenticated) {
+  if (authStatus) {
     return <Redirect to="/" />;
   }
 
@@ -32,7 +34,9 @@ function Login({ login, isAuthenticated, alerts }) {
             onSubmit={handleSubmit}
           >
             <div className="flex flex-col justify-center text-xl">
-              <div className="text-6xl md:text-4xl xl:text-5xl 2xl:text-7xl mb-12 flex justify-center">Sign in</div>
+              <div className="text-6xl md:text-4xl xl:text-5xl 2xl:text-7xl mb-12 flex justify-center">
+                Sign in
+              </div>
               <div className="mb-4">
                 <label
                   className="block text-gray-700 font-bold mb-2"
@@ -41,7 +45,7 @@ function Login({ login, isAuthenticated, alerts }) {
                   Email
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow text-lg appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="email"
                   type="text"
                   placeholder="Email"
@@ -57,7 +61,7 @@ function Login({ login, isAuthenticated, alerts }) {
                   Password
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow text-lg appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                   id="password"
                   type="password"
                   placeholder="******************"
@@ -84,45 +88,6 @@ function Login({ login, isAuthenticated, alerts }) {
                 </button>
               </div>
             </div>
-            <div className="w-full mt-3">
-              {alerts.map((item, index) =>
-                item.type === "failed" ? (
-                  <div
-                    key={index}
-                    className="flex items-center bg-red-200 border border-red-500 text-red-900 rounded text-xl p-2 mb-1"
-                  >
-                    <div className="mr-3 text-xl">
-                      <svg width="1em" height="1em" viewBox="0 0 12 12">
-                        <g fill="none">
-                          <path
-                            d="M6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10zm-.75-2.75a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.258-4.84a.5.5 0 0 1 .984 0l.008.09V6l-.008.09a.5.5 0 0 1-.984 0L5.5 6V3.5l.008-.09z"
-                            fill="currentColor"
-                          ></path>
-                        </g>
-                      </svg>
-                    </div>
-                    <div className="text-base">{item.msg}</div>
-                  </div>
-                ) : (
-                  <div
-                    key={index}
-                    className="flex items-center bg-green-200 border border-green-500 text-green-900 rounded text-xl p-2 mb-1"
-                  >
-                    <div className="mr-3 text-xl">
-                      <svg width="1em" height="1em" viewBox="0 0 12 12">
-                        <g fill="none">
-                          <path
-                            d="M6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10zm-.75-2.75a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.258-4.84a.5.5 0 0 1 .984 0l.008.09V6l-.008.09a.5.5 0 0 1-.984 0L5.5 6V3.5l.008-.09z"
-                            fill="currentColor"
-                          ></path>
-                        </g>
-                      </svg>
-                    </div>
-                    <div className="text-base">{item.msg}</div>
-                  </div>
-                )
-              )}
-            </div>
           </form>
         </div>
       </div>
@@ -130,15 +95,4 @@ function Login({ login, isAuthenticated, alerts }) {
   );
 }
 
-Login.propTypes = {
-  login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
-  alerts: PropTypes.array,
-};
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  alerts: state.alerts,
-});
-
-export default connect(mapStateToProps, { login })(Login);
+export default Login;

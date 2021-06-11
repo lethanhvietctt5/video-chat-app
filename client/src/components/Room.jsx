@@ -1,33 +1,36 @@
 import { useParams } from "react-router";
-import Message from "./Message";
-import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { loadUser } from "../actions/auth";
 import io from "socket.io-client";
 import Peer from "peerjs";
+import Message from "components/Message";
 
-const END_POINT = "https://room-call-chat-app.herokuapp.com/";
-// const END_POINT = "http://localhost:5000";
+const END_POINT = process.env.REACT_APP_HOST_URL;
 
-function Room({ isAuthenticated, user }) {
-  let [room] = useState(useParams().id);
-  let [socket] = useState(() =>
+function Room() {
+  const loadingStatus = useSelector((state) => state.auth.loading);
+  const authStatus = useSelector((state) => state.auth.isAuthenticated);
+  const [room] = useState(useParams().id);
+  const user = useSelector((state) => state.auth.user);
+
+  const [socket] = useState(() =>
     io(END_POINT, {
       transports: ["websocket"],
       upgrade: false,
     })
   );
-  let [members, setMembers] = useState([]);
-  let [peer] = useState(
+  const [peerId, setPeerId] = useState();
+  const [members, setMembers] = useState([]);
+  const [peer] = useState(
     () =>
       new Peer({
         config: {
           iceServers: [
-            { urls: ["stun:ss-turn1.xirsys.com"] },
+            { urls: [process.env.REACT_APP_ICE_URL] },
             {
-              username:
-                "Dc7ggNOIfRrrSBHsJ4QRfdtGsk0KSdvQR4vDjpRw800C9zQUuqOajzBquMCZp2lHAAAAAGBismBsZXRoYW5odmlldA==",
-              credential: "02cacc36-9116-11eb-a0d5-0242ac140004",
+              username: process.env.REACT_APP_ICE_USER,
+              credential: process.env.REACT_APP_ICE_CREDENTIALS,
               urls: [
                 "turn:ss-turn1.xirsys.com:80?transport=udp",
                 "turn:ss-turn1.xirsys.com:3478?transport=udp",
@@ -41,16 +44,11 @@ function Room({ isAuthenticated, user }) {
         },
       })
   );
-  let [peerId, setPeerId] = useState();
-
-  useEffect(() => {
-    loadUser();
-  }, []);
 
   useEffect(() => {
     peer?.on("open", (id) => {
       setPeerId(id);
-      socket.emit("joinRoom", { name: user.name, room, peerID: id });
+      socket.emit("joinRoom", { name: user?.name, room, peerID: id });
 
       socket.on("allMembers", (userPeers) => {
         let videos = document.getElementById("videoContainer");
@@ -104,11 +102,13 @@ function Room({ isAuthenticated, user }) {
     updateStream(members);
   }, [members]);
 
+  if (!authStatus && !loadingStatus) {
+    return <Redirect to="/login" />;
+  }
+
   function updateStream(userPeers) {
     let videos = document.getElementById("videoContainer");
-    let arrVideos = document.querySelectorAll("#videoContainer > *");
     let arr = [];
-    console.log(userPeers, arrVideos.length, videos.childNodes.length);
     for (let i = 0; i < videos.childNodes.length; i++) {
       if (!userPeers.includes(videos.childNodes[i].id)) {
         arr.push(videos.childNodes[i]);
@@ -159,9 +159,4 @@ function Room({ isAuthenticated, user }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  user: state.auth.user,
-});
-
-export default connect(mapStateToProps, { loadUser })(Room);
+export default Room;

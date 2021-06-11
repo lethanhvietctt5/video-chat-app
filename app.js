@@ -38,7 +38,7 @@ app.get("/auth", function (req, res) {
       .json({ user: { email: decoded.email, name: decoded.name } });
   }
 
-  res.status(403).json({ message: "Failed Auth" });
+  res.json({ message: "Failed Auth" });
 });
 
 app.post("/login", async function (req, res) {
@@ -57,7 +57,7 @@ app.post("/login", async function (req, res) {
     }
     return res.status(403).json({ message: "Failed" });
   }
-  res.status(403).json({ message: "Failed" });
+  res.json({ message: "Failed" });
 });
 
 app.post("/register", async function (req, res) {

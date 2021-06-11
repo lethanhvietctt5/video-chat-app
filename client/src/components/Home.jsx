@@ -1,20 +1,19 @@
 import { Link, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { logout } from "../actions/auth";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
-function Home({ logout, isAuthenticated }) {
-  let [id, setId] = useState(uuidv4());
-  function handleLogout() {
-    logout();
-  }
+import { useEffect, useState } from "react";
+import { authLogout } from "redux/slices/auth";
 
-  function handleCreateRoom() {
+function Home() {
+  let [id, setId] = useState();
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     setId(uuidv4());
-  }
+  }, []);
 
-  if (!isAuthenticated) return <Redirect to="/login" />;
+  if (!user) return <Redirect to="/login" />;
 
   return (
     <div className="flex h-full bg-img-background bg-cover bg-no-repeat w-full justify-center items-center">
@@ -37,10 +36,7 @@ function Home({ logout, isAuthenticated }) {
               to={`/rooms/${id}`}
               className="flex justify-start min-w-3/4 ml-6"
             >
-              <button
-                onClick={handleCreateRoom}
-                className="justify-center focus:outline-none min-w-1/2 flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-              >
+              <button className="justify-center focus:outline-none min-w-1/2 flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 <svg width="2em" height="2em" viewBox="0 0 24 24">
                   <path
                     d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
@@ -56,11 +52,12 @@ function Home({ logout, isAuthenticated }) {
 
           <div className="flex justify-center mt-6">
             <div className="text-white text-xl text hover:underline cursor-pointer">
-              {isAuthenticated ? (
-                <Link to="/login" onClick={handleLogout}>
-                  Logout
-                </Link>
-              ) : null}
+              <button
+                className="focus:outline-none"
+                onClick={() => dispatch(authLogout())}
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -69,12 +66,4 @@ function Home({ logout, isAuthenticated }) {
   );
 }
 
-Home.propTypes = {
-  isAuthenticated: PropTypes.bool,
-};
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps, { logout })(Home);
+export default Home;

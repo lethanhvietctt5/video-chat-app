@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
-function Message({ isAuthenticated, room, user, socket }) {
+function Message({ room, socket }) {
   let [messages, setMessages] = useState([]);
   let [message, setMessage] = useState("");
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (socket) {
@@ -107,9 +108,4 @@ function Message({ isAuthenticated, room, user, socket }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  user: state.auth.user,
-});
-
-export default connect(mapStateToProps)(Message);
+export default Message;

@@ -1,11 +1,10 @@
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { Link, Redirect } from "react-router-dom";
 import { useState } from "react";
-import { register } from "../actions/auth";
+import api from "api";
 
-function Register({ register, alerts }) {
+function Register() {
   let [form, setForm] = useState({});
+  const [regSucceed, setRegSuccess] = useState(false);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.id]: e.target.value });
@@ -13,14 +12,25 @@ function Register({ register, alerts }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(form);
-    register(form);
+    api.post("/register", { ...form }).then((response) => {
+      if (response.msg) {
+      } else {
+        setRegSuccess(true);
+      }
+    });
   }
+
+  if (regSucceed) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <div className="h-full bg-img-background bg-cover bg-no-repeat flex justify-center md:block">
       <div className="h-full w-3/4 md:w-1/3 items-center flex justify-center bg-white bg-opacity-50 shadow-2xl rounded px-4">
-        <form className="max-w-lg text-xl" onSubmit={handleSubmit}>
-          <div className="text-6xl md:text-4xl xl:text-5xl 2xl:text-7xl mb-12 flex justify-center">Sign up</div>
+        <form className="max-w-lg text-xl" autoComplete="off" onSubmit={handleSubmit}>
+          <div className="text-6xl md:text-4xl xl:text-5xl 2xl:text-7xl mb-12 flex justify-center">
+            Sign up
+          </div>
 
           <div className="mb-4">
             <label
@@ -30,7 +40,7 @@ function Register({ register, alerts }) {
               Full name
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+              className="text-lg appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
               id="name"
               type="text"
               placeholder="Name"
@@ -45,7 +55,7 @@ function Register({ register, alerts }) {
               Email
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+              className="text-lg appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
               id="email"
               type="text"
               placeholder="Email"
@@ -61,7 +71,7 @@ function Register({ register, alerts }) {
                 Password
               </label>
               <input
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                className="text-lg appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="password"
                 type="password"
                 placeholder="******************"
@@ -89,59 +99,10 @@ function Register({ register, alerts }) {
               Sign up
             </button>
           </div>
-
-          <div className="w-full mt-3">
-            {alerts.map((item, index) =>
-              item.type === "failed" ? (
-                <div
-                  key={index}
-                  className="flex items-center bg-red-200 border border-red-500 text-red-900 rounded text-xl p-2 mb-1"
-                >
-                  <div className="mr-3 text-xl">
-                    <svg width="1em" height="1em" viewBox="0 0 12 12">
-                      <g fill="none">
-                        <path
-                          d="M6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10zm-.75-2.75a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.258-4.84a.5.5 0 0 1 .984 0l.008.09V6l-.008.09a.5.5 0 0 1-.984 0L5.5 6V3.5l.008-.09z"
-                          fill="currentColor"
-                        ></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <div className="text-base">{item.msg}</div>
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className="flex items-center bg-green-200 border border-green-500 text-green-900 rounded text-xl p-2 mb-1"
-                >
-                  <div className="mr-3 text-xl">
-                    <svg width="1em" height="1em" viewBox="0 0 12 12">
-                      <g fill="none">
-                        <path
-                          d="M6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10zm-.75-2.75a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.258-4.84a.5.5 0 0 1 .984 0l.008.09V6l-.008.09a.5.5 0 0 1-.984 0L5.5 6V3.5l.008-.09z"
-                          fill="currentColor"
-                        ></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <div className="text-base">{item.msg}</div>
-                </div>
-              )
-            )}
-          </div>
         </form>
       </div>
     </div>
   );
 }
 
-Register.prototype = {
-  alerts: PropTypes.array,
-  register: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  alerts: state.alerts,
-});
-
-export default connect(mapStateToProps, { register })(Register);
+export default Register;

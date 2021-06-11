@@ -7,7 +7,10 @@ module.exports = {
         "img-background": "url('./assets/images/background.png')",
       }),
       fontSize: {
-        's': ".6rem",
+        s: ".6rem",
+      },
+      fontFamily: {
+        custom: ["Inter", "sans-serif"],
       },
     },
     minWidth: {
