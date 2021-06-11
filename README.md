@@ -10,8 +10,8 @@ Link deployed app:  https://room-call-chat-app.herokuapp.com/
 * Send messages in realtime
 
 ## Technologies
-* **Front-end**: React, Redux (redux-thunk), TailwindCSS, PostCSS, PeerJS, Socket.io-Client
-* **Back-end**: NodeJS, Express, MongoDB Database, Mongoose, JWT, Socket.io
+* **Front-end**: React, Redux (Redux Toolkit), TailwindCSS, PeerJS
+* **Back-end**: NodeJS (Express), MongoDB, Socket.io
 
 ## How to Install and Run
 ### Install package
@@ -21,4 +21,7 @@ Link deployed app:  https://room-call-chat-app.herokuapp.com/
 * ```$ npm start``` to run server
 * ```$ cd client/ and npm start``` to run client
 
-**NOTE: you can change database connection in** ```./app.js``` **and change config PeerServer in** ```./client/components/Room.jsx```
+## NOTE 
+* You can change database connection in** ```./app.js``` 
+* Config PeerServer in ```./client/src/components/Room.jsx```
+* Config host to localhost in ```./client/src/api/index.js```
