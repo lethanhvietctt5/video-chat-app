@@ -12,7 +12,7 @@ function Room() {
   const loadingStatus = useSelector((state) => state.auth.loading);
   const authStatus = useSelector((state) => state.auth.isAuthenticated);
   const [room] = useState(useParams().id);
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user.user);
 
   const [socket] = useState(() =>
     io(END_POINT, {

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 function Message({ room, socket }) {
   let [messages, setMessages] = useState([]);
   let [message, setMessage] = useState("");
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.auth.user.user);
 
   useEffect(() => {
     if (socket) {
@@ -37,6 +37,7 @@ function Message({ room, socket }) {
     if (item.name !== "Admin")
       return (
         <div
+          key={index}
           className={
             item.name === user.name ? "flex justify-end" : "flex justify-start"
           }
@@ -76,30 +77,26 @@ function Message({ room, socket }) {
 
       <div className="fixed bottom-0 w-1/4 bg-white">
         <form
-          className="h-16 w-full flex border-t p-2 items-center justify-center"
+          className="h-16 w-full flex border-t py-2 items-center justify-between"
           onSubmit={handleSendMessage}
         >
-          <div className="h-full w-11/12 p-1 flex items-center">
+          <div className="h-full w-10/12 p-2 flex items-center">
             <input
               type="text"
               name="message"
               autoComplete="off"
-              placeholder="Ab"
+              placeholder="Enter message ..."
               value={message}
               onChange={handleInput}
-              className="h-full w-full text-xs no-scrollbar resize-none outline-none border-gray-400 border rounded-full p-2"
+              className="h-full w-full text-xs no-scrollbar resize-none outline-none border-gray-400 border rounded-lg p-2"
             />
           </div>
-          <div className="h-full flex items-center w-1/12 text-2xl mr-2">
-            <button type="submit" className="focus:outline-none">
-              <svg width="1em" height="1em" viewBox="0 0 15 15">
-                <g fill="none">
-                  <path
-                    d="M14.5.5l.46.197a.5.5 0 0 0-.657-.657L14.5.5zm-14 6l-.197-.46a.5.5 0 0 0-.06.889L.5 6.5zm8 8l-.429.257a.5.5 0 0 0 .889-.06L8.5 14.5zM14.303.04l-14 6l.394.92l14-6l-.394-.92zM.243 6.93l5 3l.514-.858l-5-3l-.514.858zM5.07 9.757l3 5l.858-.514l-3-5l-.858.514zm3.889 4.94l6-14l-.92-.394l-6 14l.92.394zM14.146.147l-9 9l.708.707l9-9l-.708-.708z"
-                    fill="currentColor"
-                  ></path>
-                </g>
-              </svg>
+          <div className="h-full flex items-center w-2/12 mr-2 py-2">
+            <button
+              type="submit"
+              className="focus:outline-none px-2 py-1 bg-blue-700 text-white rounded-lg"
+            >
+              Send
             </button>
           </div>
         </form>
