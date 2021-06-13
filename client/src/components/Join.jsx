@@ -12,7 +12,6 @@ function Join() {
   return (
     <div className="w-full h-full flex justify-center items-center bg-img-background bg-cover bg-no-repeat">
       <div>
-        <div className="text-white text-5xl mb-4">Join A Room</div>
         <div>
           <form>
             <input
@@ -21,12 +20,12 @@ function Join() {
               value={id}
               onChange={handleChange}
               placeholder="Enter room's id ..."
-              className="rounded-lg p-4 focus:outline-none"
+              className="rounded-lg p-2 focus:outline-none"
             />
             <Link to={`/rooms/${id}`}>
               <button
                 type="submit"
-                className="bg-blue-500 text-white ml-4 text-xl p-2 rounded-xl"
+                className="bg-blue-500 text-white ml-4 text-lg py-2 px-3 rounded-xl"
               >
                 JOIN
               </button>

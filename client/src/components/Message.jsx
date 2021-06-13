@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 function Message({ room, socket }) {
   let [messages, setMessages] = useState([]);
   let [message, setMessage] = useState("");
-  const user = useSelector((state) => state.auth.user.user);
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (socket) {

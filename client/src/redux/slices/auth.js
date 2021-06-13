@@ -42,7 +42,7 @@ const authSlice = createSlice({
         state.loading = false;
         if (!action.payload.message) {
           state.isAuthenticated = true;
-          state.user = action.payload;
+          state.user = action.payload.user;
         }
       })
       .addCase(fetchUser.rejected, (state, action) => {
