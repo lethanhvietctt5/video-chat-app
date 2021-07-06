@@ -47,7 +47,7 @@ function Login() {
                 <input
                   className="shadow text-lg appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="email"
-                  type="text"
+                  type="email"
                   placeholder="Email"
                   onChange={handleOnChange}
                   value={email}

@@ -27,7 +27,11 @@ function Register() {
   return (
     <div className="h-full bg-img-background bg-cover bg-no-repeat flex justify-center md:block">
       <div className="h-full w-3/4 md:w-1/3 items-center flex justify-center bg-white bg-opacity-50 shadow-2xl rounded px-4">
-        <form className="max-w-lg text-xl" autoComplete="off" onSubmit={handleSubmit}>
+        <form
+          className="max-w-lg text-xl"
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
           <div className="text-6xl md:text-4xl xl:text-5xl 2xl:text-7xl mb-12 flex justify-center">
             Sign up
           </div>
@@ -57,7 +61,7 @@ function Register() {
             <input
               className="text-lg appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
               id="email"
-              type="text"
+              type="email"
               placeholder="Email"
               onChange={handleChange}
             />
