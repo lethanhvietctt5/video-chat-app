@@ -15,13 +15,13 @@ Link deployed app:  https://room-call-chat-app.herokuapp.com/
 
 ## How to Install and Run
 ### Install package
-* ```$ npm install``` to install packages for server-side (Express, Mongoose, Bcrypt, ...)
-* ```$ cd client/ and npm install``` to install packages for client-side (React, TailwindCSS, Axios,...)
+* **```$ npm install```** to install packages for server-side (Express, Mongoose, Bcrypt, ...)
+* **```$ cd client/ and npm install```** to install packages for client-side (React, TailwindCSS, Axios,...)
 ### Run app
-* ```$ npm start``` to run server
-* ```$ cd client/ and npm start``` to run client
+* **```$ npm start```** to run server
+* **```$ cd client/ and npm start```** to run client
 
 ## NOTE 
-* You can change database connection in** ```./app.js``` 
-* Config PeerServer in ```./client/src/components/Room.jsx```
-* Config host to localhost in ```./client/src/api/index.js```
+* You can change database connection in **```./app.js```** 
+* Config PeerServer in **```./client/src/components/Room.jsx```**
+* Config host to localhost in **```./client/src/api/index.js```**
