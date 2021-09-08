@@ -79,16 +79,20 @@ function Room() {
         // Answer
         peer.on("call", (call) => {
           if (videos) videos.innerHTML = "";
-          call.answer(streamLocal);
-          playStream(id, streamLocal, true);
-          userPeers.forEach((member) => {
-            if (member !== id) {
-              call?.on("stream", (remoteStream) => {
-                playStream(member, remoteStream);
+          navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+              call.answer(stream);
+              playStream(id, stream, true);
+              userPeers.forEach((member) => {
+                if (member !== id) {
+                  call?.on("stream", (remoteStream) => {
+                    playStream(member, remoteStream);
+                  });
+                }
               });
-            }
-          });
-          updateStream(userPeers);
+              updateStream(userPeers);
+            });
         });
 
         setMembers(userPeers);
