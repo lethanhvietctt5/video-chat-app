@@ -61,6 +61,7 @@ function Room() {
         navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
+            streamLocal?.getTracks().forEach((track) => track.stop());
             setStreamLocal(stream);
 
             // Play local stream and call stream to other users
@@ -82,6 +83,9 @@ function Room() {
           navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
+              streamLocal?.getTracks().forEach((track) => track.stop());
+              setStreamLocal(stream);
+
               call.answer(stream);
               playStream(id, stream, true);
               userPeers.forEach((member) => {
