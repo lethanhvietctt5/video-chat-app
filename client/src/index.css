@@ -23,3 +23,7 @@
 .h-20p {
   height: 10%;
 }
+
+#messArea {
+  height: calc(100vh - 8rem);
+}

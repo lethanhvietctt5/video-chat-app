@@ -63,11 +63,11 @@ function Message({ room, socket }) {
   }
 
   return (
-    <div className="h-full w-full">
+    <div id="messArea" className="w-full">
       <div className="h-full mx-2">
         <div
           id="messages"
-          className="h-full pb-16 text-sm pt-2 overflow-y-auto no-scrollbar"
+          className="h-full text-sm pt-2 overflow-y-auto no-scrollbar"
         >
           <div className="">
             {messages?.map((item, index) => renderMessage(item, index))}
@@ -75,9 +75,9 @@ function Message({ room, socket }) {
         </div>
       </div>
 
-      <div className="fixed bottom-0 w-1/4 bg-white">
+      <div className="fixed bottom-0 w-1/4 h-16 bg-white">
         <form
-          className="h-16 w-full flex border-t py-2 items-center justify-between"
+          className="w-full h-full flex border-t py-2 items-center justify-between"
           onSubmit={handleSendMessage}
         >
           <div className="h-full w-10/12 p-2 flex items-center">
