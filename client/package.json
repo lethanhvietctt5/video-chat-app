@@ -19,7 +19,11 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "socket.io-client": "^4.0.0",
-    "uuid": "^8.3.2",
+    "uuid": "^8.3.2",    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "autoprefixer": "^9.8.6",
+    "dotenv": "^10.0.0",
+    "postcss": "^7.0.36",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.4",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
@@ -45,12 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss7-compat": "^2.0.3",
-    "autoprefixer": "^9.8.6",
-    "dotenv": "^10.0.0",
-    "postcss": "^7.0.36",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.4"
   }
 }
