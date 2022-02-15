@@ -17,10 +17,6 @@ function updateStream(userPeers) {
         arr.push(videos.childNodes[i]);
       }
     }
-
-    arr.forEach((video) => {
-      videos.removeChild(video);
-    });
   }
 }
 
@@ -36,16 +32,19 @@ function playStream(id, stream, isLocal = false) {
       video.muted = "muted";
     }
     div.id = id;
-    var playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then((_) => {})
-        .catch((error) => {
-          console.log(error);
-        });
+    let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > video.HAVE_CURRENT_DATA;
+    if (!isPlaying) {
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then((_) => {})
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      div.appendChild(video);
+      if (videos) videos.appendChild(div);
     }
-    div.appendChild(video);
-    if (videos) videos.appendChild(div);
   }
 }
 
