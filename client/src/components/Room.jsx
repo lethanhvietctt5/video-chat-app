@@ -84,12 +84,12 @@ function Room() {
               username: process.env.REACT_APP_ICE_USER,
               credential: process.env.REACT_APP_ICE_CREDENTIALS,
               urls: [
-                "turn:ss-turn1.xirsys.com:80?transport=udp",
-                "turn:ss-turn1.xirsys.com:3478?transport=udp",
-                "turn:ss-turn1.xirsys.com:80?transport=tcp",
-                "turn:ss-turn1.xirsys.com:3478?transport=tcp",
-                "turns:ss-turn1.xirsys.com:443?transport=tcp",
-                "turns:ss-turn1.xirsys.com:5349?transport=tcp",
+                "turn:hk-turn1.xirsys.com:80?transport=udp",
+                "turn:hk-turn1.xirsys.com:3478?transport=udp",
+                "turn:hk-turn1.xirsys.com:80?transport=tcp",
+                "turn:hk-turn1.xirsys.com:3478?transport=tcp",
+                "turns:hk-turn1.xirsys.com:443?transport=tcp",
+                "turns:hk-turn1.xirsys.com:5349?transport=tcp",
               ],
             },
           ],
@@ -109,16 +109,31 @@ function Room() {
       socket.on("allMembers", (userPeers) => {
         let videos = document.getElementById("videoContainer");
         if (videos) videos.innerHTML = "";
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            streamLocal?.getTracks().forEach((track) => track.stop());
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+          streamLocal?.getTracks().forEach((track) => track.stop());
+          setStreamLocal(stream);
+          // Play local stream and call stream to other users
+          playStream(id, stream, true);
+          userPeers.forEach((member) => {
+            if (member !== id) {
+              let call = peer.call(member, stream);
+              call?.on("stream", (remoteStream) => {
+                playStream(member, remoteStream);
+              });
+            }
+          });
+          updateStream(userPeers);
+        });
+
+        // Answer
+        peer.on("call", (call) => {
+          if (videos) videos.innerHTML = "";
+          navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStreamLocal(stream);
-            // Play local stream and call stream to other users
+            call.answer(stream);
             playStream(id, stream, true);
             userPeers.forEach((member) => {
               if (member !== id) {
-                let call = peer.call(member, stream);
                 call?.on("stream", (remoteStream) => {
                   playStream(member, remoteStream);
                 });
@@ -126,25 +141,6 @@ function Room() {
             });
             updateStream(userPeers);
           });
-
-        // Answer
-        peer.on("call", (call) => {
-          if (videos) videos.innerHTML = "";
-          navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-              setStreamLocal(stream);
-              call.answer(stream);
-              playStream(id, stream, true);
-              userPeers.forEach((member) => {
-                if (member !== id) {
-                  call?.on("stream", (remoteStream) => {
-                    playStream(member, remoteStream);
-                  });
-                }
-              });
-              updateStream(userPeers);
-            });
         });
 
         setMembers(userPeers);
@@ -180,10 +176,7 @@ function Room() {
 
   return (
     <div className="w-full h-full flex">
-      <div
-        className="w-full sm:w-3/4 h-full no-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2"
-        id="videoContainer"
-      ></div>
+      <div className="w-full sm:w-3/4 h-full no-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2" id="videoContainer"></div>
       <div className="w-1/4 hidden sm:block h-full border-l border-gray-300">
         <div className="w-full h-16 flex justify-around items-center border-b">
           <button className="flex flex-col justify-center items-center p-1 rounded-lg hover:bg-blue-100">
@@ -204,9 +197,7 @@ function Room() {
           </button>
 
           <button
-            onClick={() =>
-              toggleMic(streamLocal, streamLocal.getAudioTracks()[0].enabled)
-            }
+            onClick={() => toggleMic(streamLocal, streamLocal.getAudioTracks()[0].enabled)}
             className="flex flex-col justify-center items-center p-1 rounded-lg hover:bg-blue-100"
           >
             <div>
