@@ -61,6 +61,7 @@ function Room() {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
           streamLocal?.getTracks().forEach((track) => track.stop());
           setStreamLocal(stream);
+          stream._id = id;
           // Play local stream and call stream to other users
           playStream(id, stream, true);
           userPeers.forEach((member) => {
@@ -76,16 +77,11 @@ function Room() {
 
         // Answer
         peer.on("call", (call) => {
-          if (videos) videos.innerHTML = "";
           navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            setStreamLocal(stream);
             call.answer(stream);
-            playStream(id, stream, true);
-            userPeers.forEach((member) => {
-              if (member !== id) {
-                call?.on("stream", (remoteStream) => {
-                  playStream(member, remoteStream);
-                });
+            call?.on("stream", (remoteStream) => {
+              if (remoteStream?._id) {
+                playStream(remoteStream?._id, remoteStream);
               }
             });
             updateStream(userPeers);
