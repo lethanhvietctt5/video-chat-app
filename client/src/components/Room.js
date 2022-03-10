@@ -8,46 +8,6 @@ import Message from "components/Message";
 
 const END_POINT = process.env.REACT_APP_HOST_URL;
 
-function updateStream(userPeers) {
-  let videos = document.getElementById("videoContainer");
-  if (videos) {
-    let arr = [];
-    for (let i = 0; i < videos.childNodes.length; i++) {
-      if (!userPeers.includes(videos.childNodes[i].id)) {
-        arr.push(videos.childNodes[i]);
-      }
-    }
-  }
-}
-
-function playStream(id, stream, isLocal = false) {
-  if (!document.getElementById(id)) {
-    let video = document.createElement("video");
-    let div = document.createElement("div");
-    let videos = document.getElementById("videoContainer");
-
-    div.className = "max-w-full min-w-min flex justify-center items-center";
-    video.srcObject = stream;
-    if (isLocal) {
-      video.muted = "muted";
-    }
-    div.id = id;
-    let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > video.HAVE_CURRENT_DATA;
-    if (!isPlaying) {
-      var playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then((_) => {})
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      div.appendChild(video);
-      if (videos) videos.appendChild(div);
-    }
-  }
-}
-
 function Room() {
   const loadingStatus = useSelector((state) => state.auth.loading);
   const authStatus = useSelector((state) => state.auth.isAuthenticated);
@@ -143,24 +103,45 @@ function Room() {
     };
   }, [socket, peerId]);
 
-  useEffect(() => {
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    return () => {
-      streamLocal?.getTracks().forEach((track) => track.stop());
-    };
-  }, [streamLocal]);
-
-  useEffect(() => {
-    updateStream(members);
-  }, [members]);
-
   if (!authStatus && !loadingStatus) {
     return <Redirect to="/login" />;
+  }
+
+  function updateStream(userPeers) {
+    let videos = document.getElementById("videoContainer");
+    if (videos) {
+      let arr = [];
+      for (let i = 0; i < videos.childNodes.length; i++) {
+        if (!userPeers.includes(videos.childNodes[i].id)) {
+          arr.push(videos.childNodes[i]);
+        }
+      }
+    }
+  }
+
+  function playStream(id, stream, isLocal = false) {
+    if (!document.getElementById(id)) {
+      let video = document.createElement("video");
+      let div = document.createElement("div");
+      let videos = document.getElementById("videoContainer");
+
+      div.className = "max-w-full min-w-min flex justify-center items-center";
+      video.srcObject = stream;
+      if (isLocal) {
+        video.muted = "muted";
+      }
+      div.id = id;
+      let playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then((_) => {})
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      div.appendChild(video);
+      if (videos) videos.appendChild(div);
+    }
   }
 
   return (
