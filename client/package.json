@@ -2,9 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "16.13.2"
-  },
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@reduxjs/toolkit": "^1.6.0",
@@ -19,7 +16,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "socket.io-client": "^4.0.0",
-    "uuid": "^8.3.2",    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "uuid": "^8.3.2",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
     "autoprefixer": "^9.8.6",
     "dotenv": "^10.0.0",
     "postcss": "^7.0.36",

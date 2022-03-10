@@ -48,16 +48,6 @@ function playStream(id, stream, isLocal = false) {
   }
 }
 
-function toggleMic(localStream, state) {
-  //console.log(localStream, state);
-  if (localStream) {
-    localStream.getAudioTracks().forEach((audio) => {
-      console.log(audio);
-      audio.enabled = !state;
-    });
-  }
-}
-
 function Room() {
   const loadingStatus = useSelector((state) => state.auth.loading);
   const authStatus = useSelector((state) => state.auth.isAuthenticated);
@@ -175,7 +165,10 @@ function Room() {
 
   return (
     <div className="w-full h-full flex">
-      <div className="w-full sm:w-3/4 h-full no-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2" id="videoContainer"></div>
+      <div
+        className="w-full sm:w-3/4 h-full no-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll bg-black bg-opacity-90 p-2"
+        id="videoContainer"
+      ></div>
       <div className="w-1/4 hidden sm:block h-full border-l border-gray-300">
         <div className="w-full h-16 flex justify-around items-center border-b">
           <button className="flex flex-col justify-center items-center p-1 rounded-lg hover:bg-blue-100">
@@ -195,10 +188,7 @@ function Room() {
             <div className="text-xs">Screen</div>
           </button>
 
-          <button
-            onClick={() => toggleMic(streamLocal, streamLocal.getAudioTracks()[0].enabled)}
-            className="flex flex-col justify-center items-center p-1 rounded-lg hover:bg-blue-100"
-          >
+          <button className="flex flex-col justify-center items-center p-1 rounded-lg hover:bg-blue-100">
             <div>
               <svg width="1em" height="1em" viewBox="0 0 256 256">
                 <path
